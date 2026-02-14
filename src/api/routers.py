@@ -1,8 +1,9 @@
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile, status
 from fastapi.responses import StreamingResponse
 import mimetypes
 
 from src.api.dependency_injection import FILE_SERVICE
+from src.exceptions.not_found_error import NotFoundError
 from src.exceptions.validation_error import ValidationError
 
 router = APIRouter()
@@ -10,8 +11,10 @@ router = APIRouter()
 
 @router.get("/{file_id}")
 async def get_file(file_id: str, file_service: FILE_SERVICE) -> StreamingResponse:
-    stream = file_service.stream_file(file_id)
-
+    try:
+        stream = file_service.stream_file(file_id)
+    except NotFoundError as exc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail=exc.message)
     media_type, _ = mimetypes.guess_type(file_id)
     media_type = media_type or "application/octet-stream"
 
