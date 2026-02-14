@@ -1,0 +1,14 @@
+.venv
+.ruff_cache
+.ruff
+.env
+.env.example
+.gitignore
+.github/
+docker-compose.yaml
+LICENSE
+Makefile
+README.md
+ruff.toml
+tree.txt
+./docs
